@@ -1,0 +1,23 @@
+- hosts: all
+  vars:
+      env: something
+  become: yes
+  become_method: sudo
+  gather_facts: no
+  pre_tasks:
+    - name: wait for ssh on 22
+      local_action: wait_for port=22 host='{{ inventory_hostname }}' search_regex=OpenSSH delay=10
+      become: no
+  tasks:
+    - name: 'gather facts'
+      setup:
+    - name: 'install updates'
+      yum: name=* update_cache=yes state=latest
+    - name: 'install htop'
+      yum: name=htop state=latest
+    - name: 'enable epel repo'
+      ini_file:
+          dest: /etc/yum.repos.d/epel.repo
+          section: epel
+          option: enabled
+          value: 1

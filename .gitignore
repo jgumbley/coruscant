@@ -1,0 +1,9 @@
+*.tfstate.*
+*.tfstate
+secretvars.*
+amivers.tfvars
+*.out
+*.box
+*.retry
+deploy_key
+deploy_key.*
