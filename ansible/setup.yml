@@ -19,5 +19,54 @@
       ini_file:
           dest: /etc/yum.repos.d/epel.repo
           section: epel
-          option: enabled
+          option: enabledve
           value: 1
+
+    - name: 'install nginx'
+      yum: name=nginx state=latest
+    - name: 'nginx config'
+      template: src=nginx_vhost.conf dest=/etc/nginx/default.d/devops_problem.conf
+    - name: 'nginx default config'
+      template: src=nginx.conf dest=/etc/nginx/nginx.conf
+    - name: 're/start nginx'
+      service: name=nginx state=restarted
+
+    - name: 'copy app files'
+      copy: src={{ item }} dest=/opt/app/ owner=ec2-user mode=0644
+      with_fileglob:
+          - ../../devops-assessment/build/*
+
+    - name: 'unarchive css'
+      unarchive: copy=no src=/opt/app/static.tgz dest=/usr/share/nginx/html/
+
+    - name: 'upstart for front-end'
+      template: src=upstart.conf dest=/etc/init/{{ item.name }}.conf
+      with_items:
+        - { name: 'front-end',
+            port: '8001',
+            chdir: '/opt/app/',
+            command: 'java -jar front-end.jar'
+            }
+
+    - name: 'upstart for quotes'
+      template: src=upstart.conf dest=/etc/init/{{ item.name }}.conf
+      with_items:
+        - { name: 'quotes',
+            port: '8002',
+            chdir: '/opt/app/',
+            command: 'java -jar quotes.jar'
+            }
+    - name: 'upstart for newsfeed'
+      template: src=upstart.conf dest=/etc/init/{{ item.name }}.conf
+      with_items:
+        - { name: 'newsfeed',
+            port: '8003',
+            chdir: '/opt/app/',
+            command: 'java -jar newsfeed.jar'
+            }
+    - name: 're/start services'
+      service: name={{ item }} state=restarted
+      with_items:
+         - "front-end"
+         - "quotes"
+         - "newsfeed"
