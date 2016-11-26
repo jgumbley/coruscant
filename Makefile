@@ -14,11 +14,8 @@ terraform: deploy_key
 	$(call green,"[All steps successful]")
 
 .PHONY: app
-app: ../devops-assessment/build/
+app:
 	$(call green,"[App built]")
-
-../devops-assessment/build/:
-	cd ../devops-assessment/; make libs; make
 
 deploy_key:
 	ssh-keygen -t rsa -b 4096 -C "$(shell whoami)@jimssolution" -f ./deploy_key
@@ -30,11 +27,15 @@ clean:
 
 .PHONY: mrsparkle
 mrsparkle: clean
-	cd ../devops-assessment/; make clean
 	rm deploy_key deploy_key.pub
 	$(call green,"[All steps successful]")
 
 .PHONY: ssh
 ssh:
 	ssh -i deploy_key ec2-user@$(MACHINE_IP)
+
+.PHONY: log
+log:
+	ssh -i deploy_key ec2-user@$(MACHINE_IP) 'sudo tail -f /var/log/firehose'
+
 

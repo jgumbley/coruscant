@@ -1,11 +1,12 @@
-Jim's Solution to the TW Infra Problem
-======================================
+Lets try and show indications of attack
+=======================================
 
-You will require:
+Like a kind of flynet.
 
- * Make
- * Terraform
- * Ansible
+Dependencies
+------------
+On OSX:
+`brew install terraform`
+`brew install ansible`
 
-Also, clone the devops-assignment into the same folder where this repo is cloned.
-
+Setup AWS creds per 'Shared credentials AWS' Amazon Document

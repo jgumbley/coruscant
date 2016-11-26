@@ -1,0 +1,8 @@
+---
+    - name: goaudit install
+      include: goaudit.yml
+      creates: /opt/go/bin/go-audit
+
+    - name: install updated rsyslog
+      include: rsyslog8.yml
+

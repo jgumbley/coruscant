@@ -7,3 +7,4 @@ amivers.tfvars
 *.retry
 deploy_key
 deploy_key.*
+.idea/

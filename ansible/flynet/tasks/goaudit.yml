@@ -1,0 +1,50 @@
+---
+- name: 'enable epel repo'
+  ini_file:
+      dest: /etc/yum.repos.d/epel.repo
+      section: epel
+      option: enabledve
+      value: 1
+
+- name: 'install golang'
+  yum: name=golang state=latest
+
+- name: 'create gopath'
+  file: path=/opt/go state=directory
+
+- name: 'install govendor'
+  command: go get -u github.com/kardianos/govendor
+  environment:
+    GOPATH: /opt/go/
+  args:
+    creates: /opt/go/bin/govendor
+
+- name: 'install go-audit'
+  command: go get -u github.com/slackhq/go-audit
+  environment:
+    GOPATH: /opt/go/
+  args:
+    creates: /opt/go/src/github.com/slackhq/go-audit
+
+- name: 'make go-audit'
+  command: make
+  environment:
+    PATH: /opt/go/bin/:{{ ansible_env.PATH }}
+    GOPATH: /opt/go/
+  args:
+    chdir: /opt/go/src/github.com/slackhq/go-audit
+    creates: /opt/go/bin/go-audit
+
+- name: 'config for go-audit'
+  copy: src=go-audit.yml dest=/etc/go-audit.yml
+  notify:
+    - restart go-audit
+
+- name: 'upstart for go-audit'
+  copy: src=go-audit.conf dest=/etc/init/go-audit.conf
+
+- name: 'start go-audit'
+  service: name=go-audit state=started
+
+
+

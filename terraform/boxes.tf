@@ -1,9 +1,8 @@
 resource "aws_instance" "web" {
     ami = "${var.ami}"
     instance_type = "${var.instance_type}"
-    security_groups = [ "${aws_security_group.allow_ssh.name}",
-      "${aws_security_group.allow_app_ports.name}",
-      "${aws_security_group.allow_debug_ports.name}",
+    security_groups = [
+      "${aws_security_group.allow_ssh.name}",
     ]
     key_name = "deployer-key"
     tags {
