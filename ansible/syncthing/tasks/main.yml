@@ -1,0 +1,5 @@
+---
+    - name: install golang
+      include: golang.yml
+      creates: /opt/go/bin
+

@@ -17,4 +17,4 @@
     - name: 'install htop'
       yum: name=htop state=latest
   roles:
-    - role: flynet
+    - role: syncthing

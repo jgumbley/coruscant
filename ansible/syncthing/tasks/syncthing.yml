@@ -1,32 +1,12 @@
 ---
-- name: 'enable epel repo'
-  ini_file:
-      dest: /etc/yum.repos.d/epel.repo
-      section: epel
-      option: enabledve
-      value: 1
-
-- name: 'install golang'
-  yum: name=golang state=latest
-
-- name: 'create gopath'
-  file: path=/opt/go state=directory
-
-- name: 'install govendor'
-  command: go get -u github.com/kardianos/govendor
-  environment:
-    GOPATH: /opt/go/
-  args:
-    creates: /opt/go/bin/govendor
-
-- name: 'install go-audit'
+- name: 'install syncthing'
   command: go get -u github.com/slackhq/go-audit
   environment:
     GOPATH: /opt/go/
   args:
     creates: /opt/go/src/github.com/slackhq/go-audit
 
-- name: 'make go-audit'
+- name: 'make synthing'
   command: make
   environment:
     PATH: /opt/go/bin/:{{ ansible_env.PATH }}
